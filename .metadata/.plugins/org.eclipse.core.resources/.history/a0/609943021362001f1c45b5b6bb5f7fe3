@@ -1,0 +1,92 @@
+package Exercises;
+
+import java.util.List;
+import java.sql.*;
+
+//This is the Interface that will help to create a required methods without forgetting
+interface MovieDAO{ 
+	void createTable() throws Exception;
+//	void deleteTable();
+//	void createMovie(final MoviesDataJDBC movie);
+//	void deleteMovie(int id);
+//	void updateMoviesTitle(int id, String newTitle);
+//	List<MoviesDataJDBC> findAll();
+}
+
+class MovieDAOImple implements MovieDAO{
+	private final Connection co; 
+	//Here we declaring the Connection variable co outside the methods to make it instance variable.
+	//So this will have global scope.
+	
+	public MovieDAOImple(Connection co) { 
+		//This is a parameterized constructor, this will take the object of the Connection from main method.
+		this.co = co; 
+	}
+	
+	
+	
+	//This method wil create a Movies table with predefined columns. 
+	//And if the table is already exists, then it will not create table.
+	public void createTable(String tableName) {
+		try(Statement st = co.createStatement()) { // This is a try-with-resource. Here Statement object will created and when ever the cursor comes out of the try block, the statement resource will be closed.
+			
+			String query = "Create table if not exists "+tableName+ "(id Integer AUTO_INCREMENT,"
+					+ "title Varchar(255),"
+					+ "genre Varchar(255),"
+					+ "yearOfRelease Integer,"
+					+ "PRIMARY KEY(id))";
+			//This is the query for creating a table
+			
+			st.executeUpdate(query); //This will execute the query 2
+			System.out.println("Created Table");
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	
+	//This is the method, that will delete the table is exists.
+	public void deleteTable(String tableName) {
+		try(Statement st = co.createStatement()){
+			String query = "drop table " +tableName;
+			st.executeUpdate(query);
+			System.out.println("Deleted Table");
+		}
+		catch(Exception e) {
+			System.out.println(e);
+		}
+	}
+}
+
+
+//This is the class, that contains id, title, genre and yearOfRelease of movie
+class Movie{
+	int id;
+	String title;
+	String genre;
+	int yearOfRelease;
+}
+
+
+//This is the class, which contains the main method. So the execution will starts here.
+public class MoviesDataJDBC {
+	static String url = "jdbc:mysql://localhost:3306/Movies"; // URL of DB
+	static String un = "root"; // user name of the database server
+	static String pass = "Purna3689"; // Password of server
+	public static void main(String[] args) {
+		String tableName = null;
+		try(Connection con = DriverManager.getConnection(url, un, pass)){
+			//Here we using try-with-resource which will close the Connection resource after the cursor reaches out of the try block.
+			MovieDAOImple md = new MovieDAOImple(con); 
+			tableName = "Purna1";
+			md.createTable(tableName); //This method will create a table if not exist.
+			
+		}
+		catch(Exception e) {
+			System.out.println(e);
+		}
+	}
+
+}
+

@@ -1,0 +1,170 @@
+package Exercises;
+
+//import java.util.List;
+import java.util.Scanner;
+import java.sql.*;
+
+//This is the Interface that will help to create a required methods without forgetting
+interface MovieDAO{ 
+	void createTable(String tableName) throws Exception;
+	void deleteTable(String tableName);
+	void createMovie(final Movie movie, String tableName);
+//	void deleteMovie(int id);
+//	void updateMoviesTitle(int id, String newTitle);
+//	List<MoviesDataJDBC> findAll();
+}
+
+
+
+
+
+class MovieDAOImple implements MovieDAO{
+	private final Connection co; 
+	//Here we declaring the Connection variable co outside the methods to make it instance variable.
+	//So this will have global scope.
+	
+	public MovieDAOImple(Connection co) { 
+		//This is a parameterized constructor, this will take the object of the Connection from main method.
+		this.co = co; 
+	}
+	
+	
+	//This method wil create a Movies table with predefined columns. 
+	//And if the table is already exists, then it will not create table.
+	public void createTable(String tableName) {
+		try(Statement st = co.createStatement()) { // This is a try-with-resource. Here Statement object will created and when ever the cursor comes out of the try block, the statement resource will be closed.
+			
+			String query = "Create table if not exists "+tableName+ "(id Integer AUTO_INCREMENT,"
+					+ "title Varchar(255),"
+					+ "genre Varchar(255),"
+					+ "yearOfRelease Integer,"
+					+ "PRIMARY KEY(id))";
+			//This is the query for creating a table
+			
+			st.executeUpdate(query); //This will execute the query 2
+			System.out.println("Created Table");
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	
+	//This is the method, that will delete the table is exists.
+	public void deleteTable(String tableName) {
+		try(Statement st = co.createStatement()){
+			String query = "drop table " +tableName;
+			st.executeUpdate(query);
+			System.out.println("Deleted Table");
+		}
+		catch(Exception e) {
+			System.out.println(e);
+		}
+	}
+	
+	
+	//This will insert a data into the table
+	public void createMovie(final Movie movie, String tableName) {
+		String query = "insert into " +tableName+ " values( ?, ?, ?, ?)";
+		try(PreparedStatement ps = co.prepareStatement(query)){
+			ps.setInt(1, movie.id);
+			ps.setString(2, movie.title);
+			ps.setString(3, movie.genre);
+			ps.setInt(4, movie.yearOfRelease);
+			ps.executeUpdate();
+			System.out.println("Data inserted");
+		}
+		catch(Exception e) {
+			System.out.println(e);
+		}
+	}
+	
+	public int lastId(String tableName) {
+		try(Statement s = co.createStatement()){
+			String query = "Select id from " +tableName+ " order by id DESC limit 1;";
+			ResultSet result = s.executeQuery(query);
+//			System.out.println(result.getInt(1));
+//			return result.getInt(1);
+			return 4;
+		}
+		catch(Exception e) {
+			System.out.println(e);
+		}
+		return 0;
+		
+		
+	}
+	
+	
+	
+}
+
+
+
+
+
+//This is the class, that contains id, title, genre and yearOfRelease of movie
+class Movie{
+	
+	int id;
+	String title;
+	String genre;
+	int yearOfRelease;
+	
+	//This is a parameterized constructor, it will collect required data during object creation and stores the data.
+	public Movie(int id, String title, String genre, int yearOfRelease) {
+		this.id = id;
+		this.title = title;
+		this.genre = genre;
+		this.yearOfRelease = yearOfRelease;
+	}
+	
+	
+}
+
+
+
+
+
+//This is the class, which contains the main method. So the execution will starts here.
+public class MoviesDataJDBC {
+	
+	static String url = "jdbc:mysql://localhost:3306/Movies"; // URL of DB
+	static String un = "root"; // user name of the database server
+	static String pass = "Purna3689"; // Password of server
+	
+	
+	public static void main(String[] args) {
+		
+		String tableName = null;
+		System.out.println("Enter the Table name : ");
+		Scanner sc = new Scanner(System.in);
+		
+		try(Connection con = DriverManager.getConnection(url, un, pass)){
+			//Here we using try-with-resource which will close the Connection resource after the cursor reaches out of the try block.
+			
+			MovieDAOImple md = new MovieDAOImple(con); 
+			tableName = sc.nextLine();
+			
+//			md.createTable(tableName); //This method will create a table if not exist.
+			
+			//md.deleteTable(tableName);  This method will delete a table if  exist.
+			
+			System.out.println("Enter the movie name, genre, yearOfRelease :");
+			md.lastId(tableName);
+//			String movieName = sc.nextLine();
+//			String genre = sc.nextLine();
+//			int yearOfRelease = Integer.parseInt(sc.nextLine());
+//			md.createMovie(new Movie((md.lastId(tableName))+1, movieName, genre, yearOfRelease), tableName); //this will insert the data into the table.
+		}
+		catch(Exception e) {
+			
+			System.out.println(e);
+		}
+		finally {
+			sc.close();
+		}
+	}
+
+}
+

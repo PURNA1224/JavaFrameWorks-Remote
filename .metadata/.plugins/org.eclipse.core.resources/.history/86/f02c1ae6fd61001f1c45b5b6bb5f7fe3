@@ -1,0 +1,56 @@
+package Exercises;
+
+import java.util.List;
+import java.sql.*;
+
+//This is the Interface that will help to create a required methods without forgetting
+interface MovieDAO{ 
+	void createTable() throws Exception;
+//	void deleteTable();
+//	void createMovie(final MoviesDataJDBC movie);
+//	void deleteMovie(int id);
+//	void updateMoviesTitle(int id, String newTitle);
+//	List<MoviesDataJDBC> findAll();
+}
+
+class MovieDAOImple implements MovieDAO{
+	Connection co = null;
+	public void connect() {
+		try {
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public void createTable() throws Exception {
+		String query = "Create table ? (?, ?)";
+		Statement st = co.createStatement();
+		st.executeQuery(query);
+	}
+	
+}
+
+class Movie{
+	int id;
+	String title;
+	String genre;
+	int yearOfRelease;
+}
+public class MoviesDataJDBC {
+	static String url = "jdbc:mysql://localhost:3306/Movies";
+	static String un = "root";
+	static String pass = "Purna3689";
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		try(Connection con = DriverManager.getConnection(url, un, pass)){
+			
+		}
+		catch(Exception e) {
+			System.out.println(e);
+		}
+	}
+
+}
+

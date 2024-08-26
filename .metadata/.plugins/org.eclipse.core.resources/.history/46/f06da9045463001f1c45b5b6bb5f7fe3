@@ -1,0 +1,29 @@
+package MysqlConnector;
+import java.sql.*;
+public class DailyPractice {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		String url = "jdbc:mysql://localhost:3306/Movies";
+		String uName = "root";
+		String passWord = "Purna3689";
+		try(Connection connection = DriverManager.getConnection(url, uName, passWord)){
+			Statement st = connection.createStatement();
+			ResultSet rs = st.executeQuery("Select * from movies");
+			while(rs.next()) {
+				System.out.println(rs.getInt(1) + " || " + rs.getString(2) + " || " + rs.getString(3) + " || " + rs.getInt(4));
+			}
+			st.close();
+			
+			PreparedStatement ps = connection.prepareStatement("Insert into movies values(7, 'Pushpa', 'Action', 2020");
+			ps.executeUpdate();
+			System.out.println("Updated");
+			ps.close()
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+	}
+
+}

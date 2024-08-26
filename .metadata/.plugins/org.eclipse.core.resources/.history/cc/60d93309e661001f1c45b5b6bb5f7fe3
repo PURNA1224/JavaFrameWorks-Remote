@@ -1,0 +1,37 @@
+package MysqlConnector;
+
+import java.sql.*;
+
+public class SimplifyCode {
+
+	public static void main(String[] args) throws Exception {
+		// TODO Auto-generated method stub
+		StudentDAO s = new StudentDAO();
+		Student s1 = s.getStudent(11);
+		System.out.println(s1.name);
+		
+	}
+
+}
+
+class StudentDAO{
+	public Student getStudent(int roll_no) throws Exception {
+		Student stud = new Student();
+		stud.roll_no = roll_no;
+		Connection co = DriverManager.getConnection("jdbc:mysql://localhost:3306/Student_schema", "root", "Purna3689");
+		Statement st = co.createStatement();
+		ResultSet rs = st.executeQuery("Select name from Student_Marks where roll_no = "+roll_no);
+		rs.next();
+		stud.name = rs.getString(1);
+		st.close();
+		co.close();
+		return stud;
+	}
+}
+
+class Student{
+	int roll_no = 0;
+	String name = null;
+	int marks = 0;
+	String address = null;
+}

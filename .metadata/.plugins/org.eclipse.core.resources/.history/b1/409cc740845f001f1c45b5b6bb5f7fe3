@@ -1,0 +1,11 @@
+package MysqlConnector;
+//import java.sql.*;
+
+public class SqlConnectorDemo {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+
+	}
+
+}
