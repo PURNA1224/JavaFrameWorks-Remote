@@ -14,6 +14,7 @@ interface MovieDAO{
 	void deleteMovie(int id, String tableName);
 	void updateMoviesTitle(int id, String newTitle, String movieName);
 	List<Movie> findAll(String tableName);
+//	void SwitchTable(String tableName);
 }
 
 
@@ -172,6 +173,7 @@ class MovieDAOImple implements MovieDAO{
 	    return Optional.empty();
 	
 	}
+	
 	
 }
 
